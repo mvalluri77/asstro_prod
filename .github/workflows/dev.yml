@@ -12,9 +12,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout repo
+    - name: Checkout repo
       uses: actions/checkout@v2.3.4
+      
+    - name: Install Astronomer CLI
+      run: |
+        curl -sSL https://install.astronomer.io | bash
+        echo 'export PATH="$HOME/.astro/bin:$PATH"' >> $GITHUB_ENV
+      
     - name: Deploy to Astro
       run: |
-        brew install astronomer/cloud/astrocloud
         astrocloud deploy --pytest ${{ secrets.ASTRONOMER_DEPLOYMENT_ID_DEV }}
