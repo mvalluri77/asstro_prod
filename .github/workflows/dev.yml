@@ -17,13 +17,15 @@ jobs:
 
     - name: Install Astronomer CLI
       run: |
-        curl -sSL https://get.astronomer.io | bash
-        echo 'export PATH="$HOME/.astro/bin:$PATH"' >> $GITHUB_ENV
-        echo 'source $HOME/.astro/completion.bash' >> $GITHUB_ENV
+        wget -qO- https://get.astronomer.io | bash
+        echo "$HOME/.astro/bin" >> $GITHUB_PATH
+
+    - name: Verify Astronomer CLI Installation
+      run: |
+        astro --version
 
     - name: Deploy to Astro
       run: |
-        source $GITHUB_ENV
         astrocloud deploy --pytest ${{ secrets.ASTRONOMER_DEPLOYMENT_ID_DEV }}
       env:
         ASTRO_API_TOKEN: ${{ secrets.ASTRO_API_TOKEN_DEV }}
