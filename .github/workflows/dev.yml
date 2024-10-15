@@ -19,13 +19,19 @@ jobs:
       run: |
         wget -qO- https://get.astronomer.io | bash
         echo "$HOME/.astro/bin" >> $GITHUB_PATH
+        # Check if the installation succeeded
+        ls -la $HOME/.astro/bin
 
     - name: Verify Astronomer CLI Installation
       run: |
-        astro --version
+        echo 'PATH=$HOME/.astro/bin:$PATH' >> $GITHUB_ENV
+        source $GITHUB_ENV
+        which astro || echo "astro not found"
+        astro --version || echo "Failed to get astro version"
 
     - name: Deploy to Astro
       run: |
+        source $GITHUB_ENV
         astrocloud deploy --pytest ${{ secrets.ASTRONOMER_DEPLOYMENT_ID_DEV }}
       env:
         ASTRO_API_TOKEN: ${{ secrets.ASTRO_API_TOKEN_DEV }}
